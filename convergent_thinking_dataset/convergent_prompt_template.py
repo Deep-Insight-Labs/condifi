@@ -102,22 +102,3 @@ Event Description: {event_description}
 """
 
 
-import json
-
-with open("convergent_dataset.json", "r") as f:
-    data = json.load(f)
-
-for entry in data[:2]:
-    question = entry["input"]
-    timelines_options = ["-> ".join(tl["path"]) for tl in question["timelines"]]
-    timelines = []
-    for i, option in enumerate(timelines_options, start=1):
-        timelines.append(f"({i}) {option}")
-    user_prompt = convergent_answering_prompt_template.format(
-        company=question["company"],
-        event=question["main_event"],
-        event_description=question["event_description"],
-        timelines="\n".join(timelines)
-    )
-
-    print(user_prompt)
