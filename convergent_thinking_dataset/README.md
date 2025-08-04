@@ -66,3 +66,30 @@ The dataset covers various business domains including:
 ## Evaluation
 
 Success is measured by selecting the timeline indicated by `expected_output`, which corresponds to the timeline marked with `is_correct: true` in the input timelines array.
+
+## Prompting
+The prompt template used for evaluating different LLMs is given in [prompt_template.py](prompt_template.py). Given a question in the dataset, a prompt can be generated using:
+```python
+from convergent_prompt_template.py import convergent_answering_prompt_template
+import json
+
+with open("convergent_dataset.json", "r") as f:
+    data = json.load(f)
+
+for entry in data:
+    question = entry["input"]
+    timelines_options = ["-> ".join(tl["path"]) for tl in question["timelines"]]
+    timelines = []
+    for i, option in enumerate(timelines_options, start=1):
+        timelines.append(f"({i}) {option}")
+    user_prompt = convergent_answering_prompt_template.format(
+        company=question["company"],
+        event=question["main_event"],
+        event_description=question["event_description"],
+        timelines="\n".join(timelines)
+    )
+
+
+    # LLM code to generate answer using user_prompt
+
+```
